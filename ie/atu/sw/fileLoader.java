@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 public class fileLoader {
     
     // Class-level variable to hold the total sentiment value
-    private static double sentimentValue;
+    private  double sentimentValue;
  
     // Method to parse a file and calculate the total sentiment value
     public double parseFile(String file, ConcurrentSkipListMap<String, Double> lexicon) throws Exception {
