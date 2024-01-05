@@ -34,6 +34,7 @@ public class fileLoader {
         double lineSentimentValue = 0;
         String [] parts = text.split("\\s+");
         for (String string : parts) {
+            string = string.replaceAll("[^a-zA-Z]", "").toLowerCase();
             if (lexicon.containsKey(string)) {
                 lineSentimentValue += lexicon.get(string);
                 System.out.println("Word: " + string + " Sentiment Value: " + lexicon.get(string));
