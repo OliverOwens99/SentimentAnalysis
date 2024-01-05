@@ -52,6 +52,7 @@ public class fileLoader {
             // Remove all non-alphabetic characters and convert to lower case
             string = string.replaceAll("[^a-zA-Z]", "").toLowerCase();
             if (lexicon.containsKey(string)) {
+                // If the word is in the lexicon, add its sentiment value to the line sentiment value
                 lineSentimentValue += lexicon.get(string);
                 System.out.println("Word: " + string + " Sentiment Value: " + lexicon.get(string));
             }
