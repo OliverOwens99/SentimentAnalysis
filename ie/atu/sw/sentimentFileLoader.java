@@ -14,6 +14,7 @@ public class sentimentFileLoader implements IFileProcessor {
     private double sentimentValue;
     private ConcurrentSkipListMap<String, Double> lexicon;
 
+    // this is the constructor for the class to take in the lexicon so the lexicon can be used in the process method
     public sentimentFileLoader(ConcurrentSkipListMap<String, Double> lexicon) {
         this.lexicon = lexicon;
     }

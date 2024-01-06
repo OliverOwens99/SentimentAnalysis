@@ -6,8 +6,8 @@ import java.util.Scanner;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 public class menu {
+    // Initialize variables
     private LexiconLoader lexiconLoader;
- 
     private String lexiconFile;
     private String textFile;
     private String outputFile;
@@ -15,14 +15,16 @@ public class menu {
     private double sentiment;
     private IFileProcessor fileProcessor;
     private static final int PROGRESS_MAX = 10;
-    private static final int PROGRESS_DELAY = 10;
+    private static final int Happy = 1;
+    private static final int Sad = -1;
+    // Constructor for the class
     public menu() {
         lexiconLoader = new LexiconLoader();
         lexiconFile = "";
         textFile = "";
         outputFile = "";
     }
-
+    // Method to display the menu
     public void displayMenu() {
         int option = 0;
         while (option != -1) {
@@ -52,7 +54,7 @@ public class menu {
         }
 
     }
-
+    // Method to handle the menu options
     private void handleOption(int option, Scanner scanner) {
         if (option == 1) {
             specifyTextFile(scanner);
@@ -64,18 +66,18 @@ public class menu {
             executeAnalyseAndReport();
         }
     }
-
+    // Method to specify a text file
     private void specifyTextFile(Scanner scanner) {
         System.out.println("Specify a Text File");
         textFile = scanner.next();
 
     }
-
+    // Method to specify an output file
     private void specifyOutputFile(Scanner scanner) {
         System.out.println("Specify an Output File (default: ./out.txt)");
         outputFile = scanner.next();
     }
-
+    // Method to configure lexicons
     private void configureLexicons(Scanner scanner) {
         System.out.println("Configure Lexicons");
         System.out.println("Specify a Lexicon File");
@@ -84,7 +86,7 @@ public class menu {
         try {
             lexicon = lexiconLoader.parseLexicon(lexiconFile);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            System.out.println("Error: Unable to load lexicon: " + e.getMessage());
             e.printStackTrace();
         }
         fileProcessor = new sentimentFileLoader(lexicon);
@@ -107,9 +109,9 @@ public class menu {
     // Method to display the sentiment value of a text file
     private void displaySentiment(double sentiment) {
         String sentimentText;
-        if (sentiment >= 1) {
+        if (sentiment >= Happy) {
             sentimentText = "Positive Sentiment :) for the text file: ";
-        } else if (sentiment <= -1) {
+        } else if (sentiment <= Sad) {
             sentimentText = "Negative Sentiment :( for the text file: ";
         } else {
             sentimentText = "Neutral Sentiment :| for the text file: ";
@@ -117,7 +119,7 @@ public class menu {
         System.out.println(sentimentText + textFile);
         System.out.println("Sentiment Value: " + sentiment);
     }
-
+    // Method to display the progress of the sentiment analysis
     public void displayProgress(int progress, double sentimentValue) throws InterruptedException {
         System.out.print(ConsoleColour.YELLOW);
         for (int i = 0; i < progress; i++) {
@@ -125,7 +127,7 @@ public class menu {
             Thread.sleep(10);
         }
     }
-
+    // Method to print the progress of the sentiment analysis
     public void printProgress(int progress, double sentimentValue) {
         System.out.print("\r");
         System.out.print(ConsoleColour.YELLOW);
