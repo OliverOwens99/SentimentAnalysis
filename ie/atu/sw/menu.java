@@ -6,7 +6,10 @@ import java.util.Scanner;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.io.PrintWriter;
 import java.io.IOException;
-
+/**
+ * This class represents the menu for the sentiment analysis application.
+ * It allows the user to load a lexicon, process a text file, and save the results to an output file.
+ */
 public class menu {
     // Initialize variables
     private LexiconLoader lexiconLoader;
@@ -19,14 +22,20 @@ public class menu {
     private static final int PROGRESS_MAX = 10;
     private static final int Happy = 1;
     private static final int Sad = -1;
-    // Constructor for the class
+    /**
+     * Constructor for the menu class.
+     * Initializes the lexiconLoader and sets the lexiconFile, textFile, and outputFile to empty strings.
+     */
     public menu() {
         lexiconLoader = new LexiconLoader();
         lexiconFile = "";
         textFile = "";
         outputFile = "";
     }
-    // Method to display the menu
+    /**
+     * Displays the menu to the user.
+     * The user can choose to load a lexicon, process a text file, or save the results to an output file.
+     */
     public void displayMenu() {
         int option = 0;
         while (option != -1) {
@@ -73,18 +82,30 @@ public class menu {
             executeAnalyseAndReport();
         }
     }
-    // Method to specify a text file
+    /**
+     * Specifies the text file to be analyzed.
+     *
+     * @param scanner The Scanner object to read user input.
+     */
     private void specifyTextFile(Scanner scanner) {
         System.out.println("Specify a Text File");
         textFile = scanner.next();
 
     }
-    // Method to specify an output file
+    /**
+     * Specifies the output file where the results will be written.
+     *
+     * @param scanner The Scanner object to read user input.
+     */
     private void specifyOutputFile(Scanner scanner) {
         System.out.println("Specify an Output File (default: ./out.txt)");
         outputFile = scanner.next();
     }
-    // Method to configure lexicons
+    /**
+     * Configures the lexicons to be used for sentiment analysis.
+     *
+     * @param scanner The Scanner object to read user input.
+     */
     private void configureLexicons(Scanner scanner) {
         System.out.println("Configure Lexicons");
         System.out.println("Specify a Lexicon File");
@@ -98,7 +119,9 @@ public class menu {
         }
         fileProcessor = new sentimentFileLoader(lexicon);
     }
-    // Method to execute the sentiment analysis and report the results
+    /**
+     * Executes the sentiment analysis and reports the results.
+     */
     private void executeAnalyseAndReport() {
         if (textFile == null || textFile.isEmpty()) {
             System.out.println("No text file provided for analysis.");
@@ -113,8 +136,11 @@ public class menu {
             System.out.println("Error: Unable to analyze sentiment: " + e.getMessage());
         }
     }
-
-    // Method to display the sentiment value of a text file
+    /**
+     * Displays the sentiment value of a text file.
+     *
+     * @param sentiment The sentiment value to display.
+     */
     private void displaySentiment(double sentiment) {
         String sentimentText;
         if (sentiment >= Happy) {
@@ -127,7 +153,13 @@ public class menu {
         System.out.println(sentimentText + textFile);
         System.out.println("Sentiment Value: " + sentiment);
     }
-    // Method to display the progress of the sentiment analysis
+    /**
+     * Displays the progress of the sentiment analysis.
+     *
+     * @param progress The current progress of the sentiment analysis.
+     * @param sentimentValue The current sentiment value.
+     * @throws InterruptedException If the thread is interrupted.
+     */
     public void displayProgress(int progress, double sentimentValue) throws InterruptedException {
         System.out.print(ConsoleColour.YELLOW);
         for (int i = 0; i < progress; i++) {
@@ -135,7 +167,12 @@ public class menu {
             Thread.sleep(10);
         }
     }
-    // Method to print the progress of the sentiment analysis
+    /**
+     * Prints the progress of the sentiment analysis.
+     *
+     * @param progress The current progress of the sentiment analysis.
+     * @param sentimentValue The current sentiment value.
+     */
     public void printProgress(int progress, double sentimentValue) {
         System.out.print("\r");
         System.out.print(ConsoleColour.YELLOW);
@@ -154,7 +191,12 @@ public class menu {
         System.out.print(ConsoleColour.WHITE);
         System.out.print(" Sentiment Value: " + sentimentValue);
     }
-    // Method to write the sentiment value to an output file
+    /**
+     * Writes the sentiment value to an output file.
+     *
+     * @param sentimentValue The sentiment value to write.
+     * @throws IOException If an I/O error occurs.
+     */
     public void writeSentimentToFile(double sentimentValue) throws IOException {
         String output = "Sentiment Value: " + sentiment;
 
