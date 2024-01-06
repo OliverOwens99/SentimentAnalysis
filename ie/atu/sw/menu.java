@@ -4,6 +4,8 @@ package ie.atu.sw;
 import java.io.File;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.io.PrintWriter;
+import java.io.IOException;
 
 public class menu {
     // Initialize variables
@@ -28,28 +30,33 @@ public class menu {
     public void displayMenu() {
         int option = 0;
         while (option != -1) {
-            System.out.println(ConsoleColour.WHITE);
-            System.out.println("************************************************************");
-            System.out.println("*     ATU - Dept. of Computer Science & Applied Physics    *");
-            System.out.println("*                                                          *");
-            System.out.println("*             Virtual Threaded Sentiment Analyser          *");
-            System.out.println("*                                                          *");
-            System.out.println("************************************************************");
-            System.out.println("(1) Specify a Text File");
-            System.out.println("(2) Specify an Output File (default: ./out.txt)");
-            System.out.println("(3) Configure Lexicons");
-            System.out.println("(4) Execute, Analyse and Report");
-            System.out.println("(?) Optional Extras...");
-            System.out.println("(-1) Quit");
+            try {
+                System.out.println(ConsoleColour.BLACK_BOLD_BRIGHT);
+                System.out.println("************************************************************");
+                System.out.println("*     ATU - Dept. of Computer Science & Applied Physics    *");
+                System.out.println("*                                                          *");
+                System.out.println("*             Virtual Threaded Sentiment Analyser          *");
+                System.out.println("*                                                          *");
+                System.out.println("************************************************************");
+                System.out.println("(1) Specify a Text File");
+                System.out.println("(2) Specify an Output File (default: ./out.txt)");
+                System.out.println("(3) Configure Lexicons");
+                System.out.println("(4) Execute, Analyse and Report");
+                System.out.println("(?) Optional Extras...");
+                System.out.println("(-1) Quit");
 
-            System.out.print(ConsoleColour.BLACK_BOLD_BRIGHT);
-            System.out.print("Select Option [1-4]>");
-            System.out.println();
+                System.out.print(ConsoleColour.BLACK_BOLD_BRIGHT);
+                System.out.print("Select Option [1-4]>");
+                System.out.println(" ");
 
-            Scanner scanner = new Scanner(System.in);
-            option = scanner.nextInt();
+                option = scanner.nextInt();
 
-            handleOption(option, scanner);
+                handleOption(option, scanner);
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter an integer.");
+                scanner.next(); // discard the invalid input
+            }
+
             
         }
 
@@ -101,6 +108,7 @@ public class menu {
             double sentiment = fileProcessor.parseFile(textFile);
             displaySentiment(sentiment);
             displayProgress(PROGRESS_MAX, sentiment);
+            writeSentimentToFile(sentiment);
         } catch (Exception e) {
             System.out.println("Error: Unable to analyze sentiment: " + e.getMessage());
         }
@@ -145,5 +153,15 @@ public class menu {
         System.out.print(" " + (progress * 10) + "%");
         System.out.print(ConsoleColour.WHITE);
         System.out.print(" Sentiment Value: " + sentimentValue);
+    }
+    // Method to write the sentiment value to an output file
+    public void writeSentimentToFile(double sentimentValue) throws IOException {
+        String output = "Sentiment Value: " + sentiment;
+
+        try (PrintWriter writer = new PrintWriter(outputFile, "UTF-8")) {
+            writer.println(output);
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to the file: " + e.getMessage());
+        }
     }
 }
