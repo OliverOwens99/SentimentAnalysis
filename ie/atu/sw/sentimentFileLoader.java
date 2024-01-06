@@ -1,15 +1,13 @@
 package ie.atu.sw;
-
-/**
- * This class is responsible for loading files and calculating sentiment values.
- * It implements the IFileProcessor interface and uses a lexicon for sentiment analysis.
- */
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+/**
+ * This class is responsible for loading files and calculating sentiment values.
+ * It implements the IFileProcessor interface and uses a lexicon for sentiment analysis.
+ */
 public class sentimentFileLoader implements IFileProcessor {
     
     /**
