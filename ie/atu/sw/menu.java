@@ -1,19 +1,23 @@
 package ie.atu.sw;
 
+// Import necessary classes
 import java.io.File;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 public class menu {
     private LexiconLoader lexiconLoader;
-    private fileLoader fileLoader;
+ 
     private String lexiconFile;
     private String textFile;
     private String outputFile;
     private Scanner scanner = new Scanner(System.in);
     private double sentiment;
+    private IFileProcessor fileProcessor;
+    private static final int PROGRESS_MAX = 10;
+    private static final int PROGRESS_DELAY = 10;
     public menu() {
         lexiconLoader = new LexiconLoader();
-        fileLoader = new fileLoader();
         lexiconFile = "";
         textFile = "";
         outputFile = "";
@@ -76,83 +80,68 @@ public class menu {
         System.out.println("Configure Lexicons");
         System.out.println("Specify a Lexicon File");
         lexiconFile = scanner.next();
+        ConcurrentSkipListMap<String, Double> lexicon = null; // Initialize lexicon variable
+        try {
+            lexicon = lexiconLoader.parseLexicon(lexiconFile);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        fileProcessor = new sentimentFileLoader(lexicon);
     }
-
+    // Method to execute the sentiment analysis and report the results
     private void executeAnalyseAndReport() {
-        if (lexiconFile.isEmpty()) {
-            System.out.println("Error: Please specify a lexicon file before executing this option.");
+        if (textFile == null || textFile.isEmpty()) {
+            System.out.println("No text file provided for analysis.");
             return;
         }
-        System.out.println("Execute, Analyse and Report");
         try {
-            System.out.println(new File(".").getAbsolutePath());
-            System.out.println("textFile: " + textFile + " lexiconFile: " + lexiconFile);
-            sentiment = fileLoader.parseFile(textFile, lexiconLoader.parseLexicon(lexiconFile));
-            
-        if (sentiment >= 1) {
-            System.out.println("Positive Sentiment :) for the text file: " + textFile );
-            System.out.println("Sentiment Value: " + sentiment);
-        } else if (sentiment <=-1) {
-            System.out.println("Negative Sentiment  :( for the text file: " + textFile);    
-            System.out.println("Sentiment Value: " + sentiment);
-        } else {
-            System.out.println("Neutral Sentiment :| for the text file: " + textFile);
-            System.out.println("Sentiment Value: " + sentiment);
-            
-        }
+            double sentiment = fileProcessor.parseFile(textFile);
+            displaySentiment(sentiment);
+            displayProgress(PROGRESS_MAX, sentiment);
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            displayProgress(10, sentiment);
-        } catch (InterruptedException e) {
-            
-            e.printStackTrace();
+            System.out.println("Error: Unable to analyze sentiment: " + e.getMessage());
         }
     }
 
-    public void displayProgress(int progress, double sentiment2) throws InterruptedException {
+    // Method to display the sentiment value of a text file
+    private void displaySentiment(double sentiment) {
+        String sentimentText;
+        if (sentiment >= 1) {
+            sentimentText = "Positive Sentiment :) for the text file: ";
+        } else if (sentiment <= -1) {
+            sentimentText = "Negative Sentiment :( for the text file: ";
+        } else {
+            sentimentText = "Neutral Sentiment :| for the text file: ";
+        }
+        System.out.println(sentimentText + textFile);
+        System.out.println("Sentiment Value: " + sentiment);
+    }
+
+    public void displayProgress(int progress, double sentimentValue) throws InterruptedException {
         System.out.print(ConsoleColour.YELLOW);
         for (int i = 0; i < progress; i++) {
-            printProgress(i + 1, sentiment2);
+            printProgress(i + 1, sentimentValue);
             Thread.sleep(10);
         }
     }
 
-    private void printProgress(int index, double total) {
-        if (index > total)
-            return; // Out of range
-        int size = 50; // Must be less than console width
-        char done = '█'; // Change to whatever you like.
-        char todo = '░'; // Change to whatever you like.
-
-        // Compute basic metrics for the meter
-        double complete = (100 * index) / total;
-        double completeLen = size * complete / 100;
-
-        /*
-         * A StringBuilder should be used for string concatenation inside a
-         * loop. However, as the number of loop iterations is small, using
-         * the "+" operator may be more efficient as the instructions can
-         * be optimized by the compiler. Either way, the performance overhead
-         * will be marginal.
-         */
-        StringBuilder sb = new StringBuilder();
-        sb.append("[");
-        for (int i = 0; i < size; i++) {
-            sb.append((i < completeLen) ? done : todo);
+    public void printProgress(int progress, double sentimentValue) {
+        System.out.print("\r");
+        System.out.print(ConsoleColour.YELLOW);
+        System.out.print("Analyzing Sentiment: ");
+        System.out.print(ConsoleColour.GREEN);
+        System.out.print("[");
+        for (int i = 0; i < progress; i++) {
+            System.out.print("=");
         }
-
-        /*
-         * The line feed escape character "\r" returns the cursor to the
-         * start of the current line. Calling print(...) overwrites the
-         * existing line and creates the illusion of an animation.
-         */
-        System.out.print("\r" + sb + "] " + complete + "%");
-
-        // Once the meter reaches its max, move to a new line.
-        if (done == total)
-            System.out.println("\n");
-    } // Implement your progress printing logic here
-
+        for (int i = progress; i < PROGRESS_MAX; i++) {
+            System.out.print(" ");
+        }
+        System.out.print("]");
+        System.out.print(ConsoleColour.WHITE);
+        System.out.print(" " + (progress * 10) + "%");
+        System.out.print(ConsoleColour.WHITE);
+        System.out.print(" Sentiment Value: " + sentimentValue);
+    }
 }

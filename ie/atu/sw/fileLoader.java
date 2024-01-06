@@ -1,5 +1,9 @@
 package ie.atu.sw;
-
+/*
+ * This was the original file loader class, it was replaced by the sentimentFileLoader class which
+ * implements the IFileProcessor interface but I asm leaving it in for now 
+ */
+ 
 
 
 // Import necessary classes
